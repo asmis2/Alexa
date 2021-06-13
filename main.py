@@ -4,11 +4,16 @@ import pywhatkit
 import datetime
 import wikipedia
 import pyjokes
+import webbrowser as wb
+import csv
+import os
 
 listener = sr.Recognizer()
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
+newVoiceRate = 140
+engine.setProperty('rate',newVoiceRate)
 
 
 def talk(text):
@@ -20,13 +25,16 @@ def take_command():
     try:
         with sr.Microphone() as source:
 
-            print("Yeah I am here listening to you..")
+            print("listening..")
+            listener.pause_threshold = 1
+            talk("Welcome back Mam.. Alexa at your service...How can i help you? ")
             voice = listener.listen(source)
             command = listener.recognize_google(voice)
             command = command.lower()
             if 'alexa' in command:
                 command = command.replace('alexa', '')
                 print(command)
+
 
     except:
         pass
@@ -35,7 +43,6 @@ def take_command():
 
 def run_alexa():
     command = take_command()
-    print(command)
     if 'play' in command:
         song = command.replace('play', '')
         talk('playing' + song)
@@ -58,14 +65,35 @@ def run_alexa():
         print(info1)
         talk(info1)
 
+    elif "are you dead" in command:
+        talk("No I am alive.")
+
     elif "date" in command:
-        talk("Sorry i have a headache!")
+        year =int(datetime.datetime.now().year)
+        month = int(datetime.datetime.now().month)
+        date = int(datetime.datetime.now().day)
+        talk("The current date is" )
+        talk(date)
+        talk(month)
+        talk(year)
 
     elif "are you single" in command:
         talk("No I am in a relationship with Jarvis")
 
     elif "joke" in command:
         talk(pyjokes.get_joke())
+
+    elif "logout" in command:
+        os.system("shutdown - l")
+
+    elif "shutdown" in command:
+        os.system("shutdown /s /t 1")
+
+    elif "restart" in command:
+        os.system("shutdown /r /t 1")
+
+    elif "offline" in command:
+        quit()
 
     else:
         talk("please say the command again..")
